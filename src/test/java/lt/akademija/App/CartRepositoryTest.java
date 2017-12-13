@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.access.method.P;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,10 +39,14 @@ public class CartRepositoryTest {
         product3.setName("Ledai");
 
         Cart cart = new Cart("Petras");
+        jpaProductRepository.save(product);
+        Product p = jpaProductRepository.findOne(product.getId());
+        Product p2 = jpaProductRepository.findOne(product2.getId());
+        Product p3 = jpaProductRepository.findOne(product3.getId());
 
-        cart.getProducts().add(jpaProductRepository.save(product));
-        cart.getProducts().add(jpaProductRepository.save(product2));
-        cart.getProducts().add(jpaProductRepository.save(product3));
+        cart.getProducts().add(p);
+        cart.getProducts().add(p2);
+        cart.getProducts().add(p3);
         jpaCartRepository.save(cart);
 
         Cart dbCart = jpaCartRepository.findOne(cart.getId());
