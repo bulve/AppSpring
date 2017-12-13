@@ -49,6 +49,8 @@ public class CartRepositoryTest {
         cart.getProducts().add(p3);
         jpaCartRepository.save(cart);
 
+
+        
         Cart dbCart = jpaCartRepository.findOne(cart.getId());
         assertNotNull(cart);
         assertEquals(3, dbCart.getProducts().size());
