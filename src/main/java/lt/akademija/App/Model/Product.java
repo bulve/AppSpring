@@ -1,10 +1,16 @@
 package lt.akademija.App.Model;
 
 
+
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
+@Table(name = "products")
 public class Product implements Serializable {
 
     @Id
@@ -17,9 +23,15 @@ public class Product implements Serializable {
     private double price;
     private int quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "CART_ID")
-    private Cart cart;
+
+    @ManyToMany(mappedBy = "products")
+    @JsonIgnore
+    private List<Cart> carts;
+
+
+    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.DETACH})
+    @JsonIgnore
+    private ProductBrand productBrand;
 
     public Product() {
     }
@@ -32,12 +44,20 @@ public class Product implements Serializable {
         this.quantity = quantity;
     }
 
-    public void setCart(Cart cart){
-        this.cart = cart;
+    public ProductBrand getProductBrand() {
+        return productBrand;
     }
 
-    public Cart getCart(){
-        return cart;
+    public void setProductBrand(ProductBrand productBrand) {
+        this.productBrand = productBrand;
+    }
+
+    public List<Cart> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
     }
 
     public long getId() {

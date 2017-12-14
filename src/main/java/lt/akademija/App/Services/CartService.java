@@ -7,11 +7,13 @@ import lt.akademija.App.Repository.JpaCartRepository;
 import lt.akademija.App.Repository.JpaProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class CartService {
 
     @Autowired
@@ -37,6 +39,7 @@ public class CartService {
         return jpaCartRepository.findAll();
     }
 
+
     public List<Product> getProducts(long cart_id){
         Cart cart = jpaCartRepository.findOne(cart_id);
         return cart.getProducts();
@@ -46,22 +49,25 @@ public class CartService {
         jpaCartRepository.delete(cart);
     }
 
-    public Cart addProduct(long cart_id, long product_id){
+
+    public void addProduct(long product_id, long cart_id){
+
+       Cart cart = jpaCartRepository.findOne(cart_id);
+
+       if(cart == null){
+            throw new NullPointerException();
+        }
+        cart.getProducts().add(jpaProductRepository.findOne(product_id));
+
+    }
+
+    public void addToCart(Long cart_id, Long product_id){
         Cart cart = jpaCartRepository.findOne(cart_id);
         Product product = jpaProductRepository.findOne(product_id);
-        List<Product>products = cart.getProducts();
-        if(products == null){
-            products = new ArrayList<>();
+        if(cart == null || product == null){
+            throw new NullPointerException();
         }
-        products.add(product);
-
-        //product.setCart(cart);
-        //jpaProductRepository.save(product);
-
-        cart.setProducts(products);
-        //jpaProductRepository.saveAndFlush(product);
-
-        return jpaCartRepository.saveAndFlush(cart);
+        cart.getProducts().add(product);
 
     }
 }

@@ -1,40 +1,50 @@
 package lt.akademija.App.Model;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "carts")
 public class Cart {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    private String customerName;
+    @OneToOne(mappedBy = "cart", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Customer customer;
 
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
-    private List<Product> products = new ArrayList<Product>();
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "products_cart",
+            joinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "cart_id",
+                    referencedColumnName = "id"))
+    private List<Product> products;
 
     public Cart(){
 
     }
 
-    public Cart(String customerName) {
-        this.customerName = customerName;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
     }
 
     public List<Product> getProducts() {
@@ -45,13 +55,5 @@ public class Cart {
         this.products = products;
     }
 
-    public void addProduct(Product product) {
-        products.add(product);
-    }
 
-    public void removeProduct(Product product){
-        if(products.contains(product)){
-            products.remove(product);
-        }
-    }
 }

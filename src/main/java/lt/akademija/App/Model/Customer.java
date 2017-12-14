@@ -11,20 +11,28 @@ public class Customer {
     private String firstName;
     private String lastName;
 
-    //@OneToOne(mappedBy = "customer")
+    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE})
+    private Cart cart;
 
 
-    public Customer(){
-
-    }
-
+    public Customer(){}
 
     public Customer(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
     public long getId() {
         return id;
     }
